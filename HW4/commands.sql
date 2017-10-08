@@ -25,35 +25,22 @@ LecturerID int primary key,
 LecturerName varchar(50) not null
 );
 
-
-create table Marks (
+create table TeachingProcess (
 StudentID int not null,
 CourseID int not null,
+LecturerID int not null,
 MarkValue int not null,
 primary key (StudentID, CourseID)
 );
 
-alter table marks 
-add constraint fk3 foreign key (studentid) references students(studentid);
-
-alter table marks 
-add constraint fk4 foreign key (courseid) references courses(courseid);
-
-create table TeachingProcess (
-GroupID int not null,
-CourseID int not null,
-LecturerID int not null,
-primary key (GroupID, CourseID)
-);
+alter table teachingprocess 
+add constraint fk2 foreign key (studentid) references students(studentid);
 
 alter table teachingprocess 
-add constraint fk2 foreign key (groupid) references groups(groupid);
+add constraint fk3 foreign key (courseid) references courses(courseid);
 
 alter table teachingprocess 
-add constraint fk6 foreign key (courseid) references courses(courseid);
-
-alter table teachingprocess 
-add constraint fk6 foreign key (lecturerid) references lecturers(lecturerid);
+add constraint fk4 foreign key (lecturerid) references lecturers(lecturerid);
 
 insert into groups (groupid, GroupName) values 
 	('1', 'M3436'), ('2', 'M3437'), ('3', 'M3438'), ('4', 'M3439');
@@ -84,15 +71,13 @@ insert into courses (CourseID, CourseName) values
 	(1, 'АСД'), (2, 'Дискретная математика'), (3, 'Парадигмы программирования'),
 	(4, 'Java Advanced'), (5, 'Архитектура ЭВМ');
 
-insert into teachingprocess (GroupID, CourseID, LecturerID) values
-	(1, 1, 1), (2, 2, 1), (3, 3, 2), (3, 4, 2), (4, 5, 3);
+insert into teachingprocess (StudentID, CourseID, LecturerID, MarkValue) values
+	(1, 1, 1, 3), (2, 2, 1, 5), (3, 3, 2, 2), (3, 4, 2, 3), (4, 5, 3, 4);
 
 select * from teachingprocess natural join lecturers ;
 
-insert into Marks (StudentID, CourseID, MarkValue) values 
-	(1, 1, 3), (1, 2, 4), (4, 3, 5), (9, 4, 2), (10, 5, 5);
-
-select students.StudentID, students.StudentName, 
-	Marks.MarkValue, Courses.CourseName from students 
-	inner join Marks on students.StudentID = Marks.StudentID 
-	inner join Courses on Marks.CourseID = Courses.CourseID;
+select students.StudentID, students.StudentName, groups.GroupID, 
+	TeachingProcess.MarkValue, Courses.CourseName from students 
+	inner join TeachingProcess on students.StudentID = teachingprocess.StudentID 
+	inner join Groups on students.StudentID = groups.GroupID
+	inner join Courses on teachingprocess.CourseID = Courses.CourseID;
