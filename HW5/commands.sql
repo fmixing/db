@@ -65,6 +65,9 @@ insert into courses (CourseID, CourseName) values
 insert into marks (StudentID, CourseID, MarkValue) values
 	(1, 3, 5), (1, 4, 5);
 
+insert into marks (StudentID, CourseID, MarkValue) values 
+	(2, 3, 4), (3, 3, 5);
+
 insert into marks (StudentID, CourseID, MarkValue) values
 	(2, 4, 5);
 
@@ -102,10 +105,10 @@ select StudentId, StudentName, GroupId from students
 	natural join plan 
 	natural join Lecturers where lecturers.LecturerName = 'Георгий Корнеев';
 
-select StudentId, StudentName, GroupId from students
+select distinct StudentId, StudentName, GroupId from students
 	natural join plan 
 	natural join Lecturers where lecturers.LecturerName = 'Георгий Корнеев'
-	except all (select StudentId, StudentName, GroupId from students
+	except all (select distinct StudentId, StudentName, GroupId from students
 	natural join marks 
 	natural join plan 
 	natural join Lecturers where lecturers.LecturerName = 'Георгий Корнеев');
