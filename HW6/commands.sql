@@ -173,18 +173,37 @@ select StudentID, StudentName, GroupID from Students
 				Lecturers.LecturerName = 'Георгий Корнеев'))
 		and Marks.CourseID <> any (select CourseID from Marks where Marks.StudentID = Students.StudentID));
 
+select StudentID from Students where
+	not exists (select * from (select distinct CourseID from Plan where 
+		LecturerID in 
+		(select LecturerID from Lecturers where
+			Lecturers.LecturerName = 'Георгий Корнеев') and 
+		CourseID not in (
+			select distinct Marks.CourseID from Marks where
+				Marks.StudentID = Students.StudentID and
+				Marks.CourseID in (select distinct CourseID from Plan where 
+					LecturerID in 
+					(select LecturerID from Lecturers where
+						Lecturers.LecturerName = 'Георгий Корнеев')))) as aaa);
 --6
 
 select Students.StudentName, Courses.CourseName from Students, Courses 
 	where Students.GroupID in
 	(select GroupID from Plan where 
 		Courses.CourseID = Plan.CourseID);
+
+select distinct Students.StudentName, Courses.CourseName from Students, Courses, Plan
+	where Courses.CourseID = Plan.CourseID and Students.GroupID = Plan.GroupID;
+
 --7
 
-select Lecturers.LecturerName, Students.StudentName from Students, Lecturers 
+select distinct Lecturers.LecturerName, Students.StudentName from Students, Lecturers 
 	where Students.GroupID in
 	(select GroupID from Plan where
 		Lecturers.LecturerID = Plan.LecturerID);
+
+select distinct Lecturers.LecturerName, Students.StudentName from Students, Lecturers, Plan
+	where Lecturers.LecturerID = Plan.LecturerID and Students.GroupID = Plan.GroupID;
 
 --8
 select S1.StudentName, S2.StudentName from Students as S1, Students as S2
