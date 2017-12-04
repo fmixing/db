@@ -250,6 +250,9 @@ create or replace function CloseFlight(FlightId_ int) returns
 	end;
 	$$ LANGUAGE plpgsql;
 
+-- begin;
+-- select * from CloseFlight(2);
+-- commit;
 
 -- 7
 create or replace function CheckAvailable(FlightId_ int) returns 
@@ -272,7 +275,7 @@ create or replace function ShowStatistics() returns
 	table(stat_flightid int, stat_isclosed boolean, stat_available bigint, stat_booked bigint, stat_sold bigint) as $$
 	begin 
 		perform * from Flights for share; 
-		perform * from Seats for share;
+		perform * from Seats for update;
 
 		perform Unbooking(t2.FlightId, t2.FlightTime, t2.Closed) from (select FlightId, FlightTime, Closed from flights) as t2;
 
